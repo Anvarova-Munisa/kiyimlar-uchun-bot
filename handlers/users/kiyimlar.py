@@ -2,6 +2,7 @@ from aiogram import Router,types
 
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
+from aiogram.types import reply_markup_union
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from keyboards.repaykeyboard.kiyimkeyboards import b_sport,b_klasic,b_oversize,b_uy,b_type,b_rang
 from states.kiyimlarstates import KiyimlarState
@@ -17,14 +18,14 @@ async def  kiyim(msg: types.Message, state: FSMContext):
 
 
 @router.message(KiyimlarState.type)
-async def kiyim(msg: types.Message, state: FSMContext):
+async def kiyim_start(msg: types.Message, state: FSMContext):
     text = msg.text
 
     if "sport" in text:
         keyboards = b_sport
     elif "klasic" in text:
         keyboards = b_klasic
-    elif "inamarka" in text:
+    elif "oversize" in text:
         keyboards = b_oversize
     elif "uy" in text:
         keyboards = b_uy
@@ -39,7 +40,19 @@ async def kiyim(msg: types.Message, state: FSMContext):
     await state.set_state(KiyimlarState.kiyimlar_name)
 
 @router.message(KiyimlarState.kiyimlar_name)
-async def kiyim(msg: types.Message, state: FSMContext):
+async def kiyim_tanlash(msg: types.Message, state: FSMContext):
     await state.update_data(kiyimlar_name=msg.text)
     await msg.answer("Mashina rangini kiriting:", reply_markup=types.ReplyKeyboardRemove())
-    await state.set_state(KiyimlarState.color)
+    await state.set_state(KiyimlarState.rang)
+
+
+@router.message(KiyimlarState.rang)
+async def kiyim_rang(msg: types.Message, state: FSMContext):
+    await state.update_data(rang=msg.text)
+    await msg.answer(
+        "Razmeringizni kiriting:\n  S\n, M\n,L\n, XL\n",
+        reply_markup=types.ReplyKeyboardRemove()
+    )
+    await state.set_state(KiyimlarState.razmer)
+
+
