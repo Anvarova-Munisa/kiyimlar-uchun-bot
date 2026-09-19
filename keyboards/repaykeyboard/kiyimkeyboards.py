@@ -37,3 +37,9 @@ ranglar = ["oq","qora","havorang","qizil","yashil","sariq"]
 for rang in ranglar:
     b_rang.button(text=rang)
 b_rang.adjust(3)
+
+b_razmer = ReplyKeyboardBuilder()
+razmerlar = ["S","M","L","XL","XXL"]
+for razmer in razmerlar:
+    b_razmer.button(text=razmer)
+b_razmer.adjust(3)
